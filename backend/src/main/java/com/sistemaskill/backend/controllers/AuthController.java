@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sistemaskill.backend.dtos.request.LoginRequestDTO;
 import com.sistemaskill.backend.dtos.request.UserRequestDTO;
+import com.sistemaskill.backend.dtos.response.LoginResponseDTO;
 import com.sistemaskill.backend.dtos.response.UserResponseDTO;
 import com.sistemaskill.backend.services.AuthService;
 import com.sistemaskill.backend.services.UserService;
@@ -39,13 +40,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponseDTO> login(
+    public ResponseEntity<LoginResponseDTO> login(
             @Valid @RequestBody LoginRequestDTO request) {
 
-        UserResponseDTO response = authService.login(request);
+        LoginResponseDTO response = authService.login(request);
 
         return ResponseEntity.ok(response);
-}
-
+    }
 
 }
