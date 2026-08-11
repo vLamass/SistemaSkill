@@ -1,0 +1,135 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================
+   TEMA CLARO
+========================= */
+
+:root {
+    /* =========================
+       CORES PRINCIPAIS
+    ========================= */
+
+    --color-background: #F8F4EC;
+    --color-surface: #FFFFFF;
+
+    --color-primary: #B88746;
+    --color-primary-hover: #9F7138;
+
+    --color-dark: #210100;
+
+    --color-accent-red: #8C0902;
+    --color-accent-red-light: #B14A36;
+
+    --color-gold: #E6A341;
+    --color-butter: #FCE79E;
+
+    /* =========================
+       TEXTOS
+    ========================= */
+
+    --color-text: #2D2520;
+    --color-text-secondary: #756A61;
+    --color-text-light: #FFFFFF;
+
+    /* =========================
+       BORDAS / SOMBRAS
+    ========================= */
+
+    --color-border: #E4DDD3;
+
+    --color-shadow: rgba(33, 1, 0, 0.08);
+
+    /* =========================
+       ESTADOS
+    ========================= */
+
+    --color-error: #B14A36;
+    --color-success: #4F7A55;
+
+    /* =========================
+       TIPOGRAFIA
+    ========================= */
+
+    --font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+
+/* =========================
+   TEMA ESCURO
+========================= */
+
+[data-theme="dark"] {
+    --color-background: #181513;
+    --color-surface: #241F1B;
+
+    --color-primary: #D09A55;
+    --color-primary-hover: #E0AB65;
+
+    --color-dark: #0F0C0A;
+
+    --color-accent-red: #B14A36;
+    --color-accent-red-light: #D16A52;
+
+    --color-gold: #E6A341;
+    --color-butter: #FCE79E;
+
+    /* =========================
+       TEXTOS
+    ========================= */
+
+    --color-text: #F5EFE8;
+    --color-text-secondary: #B8ADA2;
+    --color-text-light: #FFFFFF;
+
+    /* =========================
+       BORDAS / SOMBRAS
+    ========================= */
+
+    --color-border: #3A332D;
+
+    --color-shadow: rgba(0, 0, 0, 0.35);
+
+    /* =========================
+       ESTADOS
+    ========================= */
+
+    --color-error: #D16A52;
+    --color-success: #70A879;
+}
+
+
+/* =========================
+   HTML / BODY
+========================= */
+
+html,
+body,
+#root {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+
+    font-family: var(--font-family);
+
+    background: var(--color-background);
+    color: var(--color-text);
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
+}

@@ -1,0 +1,183 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+
+    background-color: rgba(0, 0, 0, 0.45);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    z-index: 1000;
+}
+
+.modal {
+    width: 100%;
+    max-width: 420px;
+
+    background-color: var(--color-surface);
+
+    border-radius: 16px;
+
+    padding: 28px;
+
+    box-shadow: 0 15px 40px var(--color-shadow);
+}
+
+.cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cabecalho h2 {
+    margin: 0;
+
+    color: var(--color-text);
+
+    font-size: 1.35rem;
+}
+
+.fechar {
+    border: none;
+    background: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-size: 1.7rem;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.fechar:hover {
+    color: var(--color-text);
+}
+
+.descricao {
+    margin: 10px 0 24px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 0.95rem;
+}
+
+.niveis {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.nivel,
+.nivelAtivo {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 10px;
+
+    font-size: 1rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.nivel {
+    border: 1px solid var(--color-border);
+
+    background-color: var(--color-background);
+
+    color: var(--color-text-secondary);
+}
+
+.nivel:hover {
+    transform: translateY(-2px);
+
+    border-color: var(--color-primary);
+
+    color: var(--color-primary);
+}
+
+.nivelAtivo {
+    border: 1px solid var(--color-primary);
+
+    background-color: var(--color-primary);
+
+    color: var(--color-text-light);
+
+    box-shadow: 0 4px 10px rgba(184, 135, 70, 0.25);
+}
+
+.legenda {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 10px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 0.8rem;
+}
+
+.erro {
+    margin: 16px 0 0;
+
+    color: var(--color-error);
+
+    font-size: 0.9rem;
+}
+
+.acoes {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    margin-top: 28px;
+}
+
+.cancelar,
+.salvar {
+    border: none;
+    border-radius: 8px;
+
+    padding: 10px 18px;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.cancelar {
+    background-color: var(--color-background);
+
+    color: var(--color-text-secondary);
+}
+
+.cancelar:hover {
+    background-color: var(--color-border);
+}
+
+.salvar {
+    background-color: var(--color-primary);
+
+    color: var(--color-text-light);
+}
+
+.salvar:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.cancelar:disabled,
+.salvar:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}

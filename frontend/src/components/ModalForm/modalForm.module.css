@@ -1,0 +1,240 @@
+.card {
+    width: min(100%, 420px);
+    padding: 42px;
+    border-radius: 20px;
+
+    background: var(--card-background, #ffffff);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cabecalho {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.cabecalho h2 {
+    margin: 0 0 8px;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    color: var(--text-color, #222);
+}
+
+.cabecalho p {
+    margin: 0;
+
+    font-size: 14px;
+    line-height: 1.5;
+
+    color: var(--text-secondary, #777);
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.formulario label {
+    font-size: 14px;
+    font-weight: 600;
+
+    color: var(--text-color, #333);
+}
+
+.formulario input {
+    width: 100%;
+    height: 46px;
+
+    padding: 0 14px;
+
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+
+    outline: none;
+
+    font-size: 14px;
+
+    background: transparent;
+    color: var(--text-color, #222);
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.formulario input:focus {
+    border-color: #c49a5a;
+
+    box-shadow:
+        0 0 0 3px rgba(196, 154, 90, 0.15);
+}
+
+.inputSenha {
+    position: relative;
+}
+
+.inputSenha input {
+    padding-right: 46px;
+}
+
+.botaoOlho {
+    position: absolute;
+
+    right: 10px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    color: #777;
+
+    cursor: pointer;
+
+    border-radius: 6px;
+}
+
+.botaoOlho:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.lembrar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 13px;
+
+    color: var(--text-secondary, #666);
+
+    cursor: pointer;
+}
+
+.lembrar input {
+    width: 15px;
+    height: 15px;
+
+    cursor: pointer;
+}
+
+.botaoSubmit {
+    width: 100%;
+    height: 46px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #b88746;
+    color: #fff;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s,
+        transform 0.1s;
+}
+
+.botaoSubmit:hover:not(:disabled) {
+    background: #a6763a;
+}
+
+.botaoSubmit:active:not(:disabled) {
+    transform: scale(0.99);
+}
+
+.botaoSubmit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.erro {
+    margin: -5px 0 0;
+
+    text-align: center;
+
+    font-size: 13px;
+    color: #d64545;
+}
+
+.alternativa {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    font-size: 13px;
+
+    color: var(--text-secondary, #777);
+}
+
+.alternativa button {
+    border: none;
+    background: transparent;
+
+    color: #b88746;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.alternativa button:hover {
+    text-decoration: underline;
+}
+
+.esqueciSenha {
+    align-self: center;
+
+    border: none;
+    background: transparent;
+
+    font-size: 13px;
+
+    color: #888;
+
+    cursor: pointer;
+}
+
+.esqueciSenha:hover {
+    color: #b88746;
+    text-decoration: underline;
+}
+.sucesso {
+    margin: 10px 0 0;
+
+    color: #2e8b57;
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    text-align: center;
+    width: 100%;
+}
+@media (max-width: 500px) {
+    .card {
+        padding: 30px 24px;
+        border-radius: 16px;
+    }
+
+    .cabecalho h2 {
+        font-size: 26px;
+    }
+}
