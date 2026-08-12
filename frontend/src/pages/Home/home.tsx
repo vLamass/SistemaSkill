@@ -59,11 +59,7 @@ export function Home() {
 
     const skillsPorPagina = 3;
 
-    /*
-     * =========================
-     * BUSCAR DADOS
-     * =========================
-     */
+    
 
     useEffect(() => {
         async function buscarDados() {
@@ -87,11 +83,7 @@ export function Home() {
                     Authorization: `Bearer ${token}`,
                 };
 
-                /*
-                 * =========================
-                 * BUSCAR TODAS AS SKILLS
-                 * =========================
-                 */
+                
 
                 const respostaSkills = await fetch(
                     "http://localhost:8080/api/skills",
@@ -112,15 +104,7 @@ export function Home() {
 
                 setTodasSkills(dadosSkills);
 
-                /*
-                 * =========================
-                 * BUSCAR USUÁRIOS
-                 * =========================
-                 *
-                 * Precisamos descobrir o ID do
-                 * usuário que está logado.
-                 */
-
+                
                 const respostaUsers = await fetch(
                     "http://localhost:8080/api/users",
                     {
@@ -149,11 +133,7 @@ export function Home() {
                     );
                 }
 
-                /*
-                 * =========================
-                 * BUSCAR USER-SKILLS
-                 * =========================
-                 */
+               
 
                 const respostaUserSkills = await fetch(
                     "http://localhost:8080/api/user-skills",
@@ -172,17 +152,7 @@ export function Home() {
                 const todasUserSkills: UserSkill[] =
                     await respostaUserSkills.json();
 
-                /*
-                 * =========================
-                 * FILTRAR PELO USUÁRIO LOGADO
-                 * =========================
-                 *
-                 * O endpoint retorna as skills de
-                 * todos os usuários.
-                 *
-                 * Aqui pegamos somente as que
-                 * pertencem ao usuário logado.
-                 */
+             
 
                 const userSkills = todasUserSkills.filter(
                     (userSkill) =>
@@ -190,11 +160,7 @@ export function Home() {
                         usuarioLogado.id
                 );
 
-                /*
-                 * =========================
-                 * BUSCAR DADOS DAS SKILLS
-                 * =========================
-                 */
+                
 
                 const minhasSkills: MinhaSkill[] =
                     await Promise.all(
@@ -252,11 +218,7 @@ export function Home() {
         buscarDados();
     }, [usuario]);
 
-    /*
-     * =========================
-     * PAGINAÇÃO
-     * =========================
-     */
+   
 
     const totalPaginas = Math.ceil(
         skills.length / skillsPorPagina
@@ -285,11 +247,7 @@ export function Home() {
         );
     }
 
-    /*
-     * =========================
-     * EDITAR NÍVEL
-     * =========================
-     */
+    
 
     function abrirModalEditarNivel(
         skill: MinhaSkill
@@ -366,11 +324,7 @@ export function Home() {
         );
     }
 
-    /*
-     * =========================
-     * ADICIONAR SKILL
-     * =========================
-     */
+    
 
     function abrirModalAdicionar() {
         setModalAdicionarAberto(true);
@@ -399,11 +353,7 @@ export function Home() {
             );
         }
 
-        /*
-         * =========================
-         * BUSCAR USUÁRIO
-         * =========================
-         */
+        
 
         const respostaUsers = await fetch(
             "http://localhost:8080/api/users",
@@ -439,11 +389,7 @@ export function Home() {
             );
         }
 
-        /*
-         * =========================
-         * EVITAR DUPLICAR SKILL
-         * =========================
-         */
+       
 
         const respostaUserSkills =
             await fetch(
@@ -482,11 +428,7 @@ export function Home() {
             );
         }
 
-        /*
-         * =========================
-         * CADASTRAR USER-SKILL
-         * =========================
-         */
+        
 
         const resposta = await fetch(
             "http://localhost:8080/api/user-skills",
@@ -527,12 +469,7 @@ export function Home() {
         const novaUserSkill: UserSkill =
             await resposta.json();
 
-        /*
-         * =========================
-         * ENCONTRAR SKILL
-         * =========================
-         */
-
+       
         const skill = todasSkills.find(
             (item) =>
                 item.id === skillId
@@ -544,11 +481,7 @@ export function Home() {
             );
         }
 
-        /*
-         * =========================
-         * ADICIONAR NA HOME
-         * =========================
-         */
+        
 
         const novaSkill: MinhaSkill = {
             id: novaUserSkill.id,
@@ -567,11 +500,7 @@ export function Home() {
             novaSkill,
         ]);
 
-        /*
-         * =========================
-         * PAGINAÇÃO
-         * =========================
-         */
+       
 
         const novaQuantidade =
             skills.length + 1;
@@ -583,18 +512,12 @@ export function Home() {
 
         setPaginaAtual(novaPagina);
 
-        /*
-         * FECHAR MODAL
-         */
+        
 
         setModalAdicionarAberto(false);
     }
 
-    /*
-     * =========================
-     * RESUMO
-     * =========================
-     */
+    
 
     const totalSkills =
         skills.length;
@@ -612,11 +535,7 @@ export function Home() {
                 skill.level === 5
         ).length;
 
-    /*
-     * =========================
-     * SKILLS JÁ CADASTRADAS
-     * =========================
-     */
+   
 
     const skillsJaCadastradas =
         skills.map(
@@ -624,11 +543,7 @@ export function Home() {
                 skill.skillId
         );
 
-    /*
-     * =========================
-     * TELA
-     * =========================
-     */
+    
 
     return (
         <main
@@ -643,7 +558,7 @@ export function Home() {
                     styles.conteudo
                 }
             >
-                {/* APRESENTAÇÃO */}
+                
 
                 <div
                     className={
@@ -673,7 +588,7 @@ export function Home() {
                     </button>
                 </div>
 
-                {/* CARDS DE RESUMO */}
+                
 
                 <section
                     className={
@@ -708,7 +623,7 @@ export function Home() {
                     />
                 </section>
 
-                {/* MINHAS SKILLS */}
+               
 
                 <section
                     className={
@@ -769,7 +684,7 @@ export function Home() {
                                 )}
                             </div>
 
-                            {/* PAGINAÇÃO */}
+                            
 
                             {totalPaginas >
                                 1 && (
@@ -823,7 +738,7 @@ export function Home() {
                 </section>
             </section>
 
-            {/* MODAL EDITAR NÍVEL */}
+            
 
             {skillSelecionada && (
                 <ModalEditarNivel

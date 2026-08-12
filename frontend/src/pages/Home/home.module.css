@@ -45,7 +45,7 @@
     background-color: var(--color-primary-hover);
 }
 
-/* OS 3 CARDS */
+
 
 .resumo {
     display: grid;
@@ -55,7 +55,7 @@
     margin-bottom: 40px;
 }
 
-/* MINHAS SKILLS */
+
 
 .minhasSkills {
     width: 100%;
@@ -132,7 +132,7 @@
     text-align: center;
 }
 
-/* RESPONSIVO */
+
 
 @media (max-width: 768px) {
 

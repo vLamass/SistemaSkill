@@ -22,17 +22,16 @@ public class JwtConfig {
     public SecretKey secretKey() {
         return new SecretKeySpec(
                 secret.getBytes(),
-                "HmacSHA256"
-        );
+                "HmacSHA256");
     }
 
     @Bean
-public JwtEncoder jwtEncoder() {
-    return NimbusJwtEncoder
-            .withSecretKey(secretKey())
-            .algorithm(MacAlgorithm.HS256)
-            .build();
-}
+    public JwtEncoder jwtEncoder() {
+        return NimbusJwtEncoder
+                .withSecretKey(secretKey())
+                .algorithm(MacAlgorithm.HS256)
+                .build();
+    }
 
     @Bean
     public JwtDecoder jwtDecoder() {

@@ -108,7 +108,7 @@ export function ModalForm({
                 </p>
             </div>
 
-            {/* USUÁRIO */}
+         
 
             <div
                 className={
@@ -135,7 +135,6 @@ export function ModalForm({
                 />
             </div>
 
-            {/* SENHA */}
 
             <div
                 className={
@@ -200,7 +199,7 @@ export function ModalForm({
                 </div>
             </div>
 
-            {/* CONFIRMAR SENHA */}
+            
 
             {!isLogin && (
                 <div
@@ -269,7 +268,7 @@ export function ModalForm({
                 </div>
             )}
 
-            {/* LEMBRAR USUÁRIO */}
+            
 
             {isLogin && (
                 <label
@@ -295,7 +294,7 @@ export function ModalForm({
                 </label>
             )}
 
-            {/* BOTÃO */}
+           
 
             <button
                 type="submit"
@@ -311,7 +310,7 @@ export function ModalForm({
                         : "Cadastrar"}
             </button>
 
-            {/* SUCESSO */}
+           
 
             {sucesso && (
                 <p
@@ -324,7 +323,7 @@ export function ModalForm({
                 </p>
             )}
 
-            {/* ERRO */}
+           
 
             {erro && (
                 <p
@@ -337,7 +336,7 @@ export function ModalForm({
                 </p>
             )}
 
-            {/* TROCA LOGIN / CADASTRO */}
+            
 
             <div
                 className={
