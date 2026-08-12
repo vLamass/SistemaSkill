@@ -55,15 +55,32 @@ export function Home() {
     const [modalAdicionarAberto, setModalAdicionarAberto] =
         useState(false);
 
-    // PAGINAÇÃO
     const [paginaAtual, setPaginaAtual] = useState(1);
 
     const skillsPorPagina = 3;
+
+    /*
+     * =========================
+     * BUSCAR DADOS
+     * =========================
+     */
 
     useEffect(() => {
         async function buscarDados() {
             try {
                 const token = localStorage.getItem("token");
+
+                if (!token) {
+                    throw new Error(
+                        "Usuário não autenticado."
+                    );
+                }
+
+                if (!usuario?.login) {
+                    throw new Error(
+                        "Não foi possível identificar o usuário logado."
+                    );
+                }
 
                 const headers = {
                     "Content-Type": "application/json",
@@ -71,8 +88,11 @@ export function Home() {
                 };
 
                 /*
-                 * BUSCAR TODAS AS SKILLS DISPONÍVEIS
+                 * =========================
+                 * BUSCAR TODAS AS SKILLS
+                 * =========================
                  */
+
                 const respostaSkills = await fetch(
                     "http://localhost:8080/api/skills",
                     {
@@ -93,8 +113,48 @@ export function Home() {
                 setTodasSkills(dadosSkills);
 
                 /*
-                 * BUSCAR AS USER-SKILLS
+                 * =========================
+                 * BUSCAR USUÁRIOS
+                 * =========================
+                 *
+                 * Precisamos descobrir o ID do
+                 * usuário que está logado.
                  */
+
+                const respostaUsers = await fetch(
+                    "http://localhost:8080/api/users",
+                    {
+                        method: "GET",
+                        headers,
+                    }
+                );
+
+                if (!respostaUsers.ok) {
+                    throw new Error(
+                        "Erro ao buscar usuários."
+                    );
+                }
+
+                const usuarios: User[] =
+                    await respostaUsers.json();
+
+                const usuarioLogado = usuarios.find(
+                    (user) =>
+                        user.login === usuario.login
+                );
+
+                if (!usuarioLogado) {
+                    throw new Error(
+                        "Usuário logado não foi encontrado."
+                    );
+                }
+
+                /*
+                 * =========================
+                 * BUSCAR USER-SKILLS
+                 * =========================
+                 */
+
                 const respostaUserSkills = await fetch(
                     "http://localhost:8080/api/user-skills",
                     {
@@ -109,65 +169,93 @@ export function Home() {
                     );
                 }
 
-                const userSkills: UserSkill[] =
+                const todasUserSkills: UserSkill[] =
                     await respostaUserSkills.json();
 
                 /*
-                 * BUSCAR OS DADOS COMPLETOS DE CADA SKILL
+                 * =========================
+                 * FILTRAR PELO USUÁRIO LOGADO
+                 * =========================
+                 *
+                 * O endpoint retorna as skills de
+                 * todos os usuários.
+                 *
+                 * Aqui pegamos somente as que
+                 * pertencem ao usuário logado.
                  */
+
+                const userSkills = todasUserSkills.filter(
+                    (userSkill) =>
+                        userSkill.userId ===
+                        usuarioLogado.id
+                );
+
+                /*
+                 * =========================
+                 * BUSCAR DADOS DAS SKILLS
+                 * =========================
+                 */
+
                 const minhasSkills: MinhaSkill[] =
                     await Promise.all(
-                        userSkills.map(async (userSkill) => {
-                            const respostaSkill =
-                                await fetch(
-                                    `http://localhost:8080/api/skills/${userSkill.skillId}`,
-                                    {
-                                        method: "GET",
-                                        headers,
-                                    }
-                                );
+                        userSkills.map(
+                            async (userSkill) => {
+                                const respostaSkill =
+                                    await fetch(
+                                        `http://localhost:8080/api/skills/${userSkill.skillId}`,
+                                        {
+                                            method: "GET",
+                                            headers,
+                                        }
+                                    );
 
-                            if (!respostaSkill.ok) {
-                                throw new Error(
-                                    `Erro ao buscar Skill ${userSkill.skillId}.`
-                                );
+                                if (!respostaSkill.ok) {
+                                    throw new Error(
+                                        `Erro ao buscar Skill ${userSkill.skillId}.`
+                                    );
+                                }
+
+                                const skill: Skill =
+                                    await respostaSkill.json();
+
+                                return {
+                                    id: userSkill.id,
+                                    skillId:
+                                        userSkill.skillId,
+                                    level:
+                                        userSkill.level,
+                                    name: skill.name,
+                                    description:
+                                        skill.description,
+                                    imageUrl:
+                                        skill.imageUrl,
+                                };
                             }
-
-                            const skill: Skill =
-                                await respostaSkill.json();
-
-                            return {
-                                id: userSkill.id,
-                                skillId: userSkill.skillId,
-                                level: userSkill.level,
-                                name: skill.name,
-                                description:
-                                    skill.description,
-                                imageUrl:
-                                    skill.imageUrl,
-                            };
-                        })
+                        )
                     );
 
                 setSkills(minhasSkills);
 
-                // Começa sempre na primeira página
                 setPaginaAtual(1);
             } catch (error) {
                 console.error(
                     "Erro ao buscar dados:",
                     error
                 );
+
+                setSkills([]);
             } finally {
                 setLoading(false);
             }
         }
 
         buscarDados();
-    }, []);
+    }, [usuario]);
 
     /*
+     * =========================
      * PAGINAÇÃO
+     * =========================
      */
 
     const totalPaginas = Math.ceil(
@@ -190,42 +278,54 @@ export function Home() {
 
     function proximaPagina() {
         setPaginaAtual((pagina) =>
-            Math.min(pagina + 1, totalPaginas)
+            Math.min(
+                pagina + 1,
+                totalPaginas
+            )
         );
     }
 
     /*
-     * ABRIR MODAL DE EDITAR NÍVEL
+     * =========================
+     * EDITAR NÍVEL
+     * =========================
      */
-    function abrirModalEditarNivel(skill: MinhaSkill) {
+
+    function abrirModalEditarNivel(
+        skill: MinhaSkill
+    ) {
         setSkillSelecionada(skill);
         setModalEditarAberto(true);
     }
 
-    /*
-     * FECHAR MODAL DE EDITAR NÍVEL
-     */
     function fecharModalEditarNivel() {
         setModalEditarAberto(false);
         setSkillSelecionada(null);
     }
 
-    /*
-     * ATUALIZAR NÍVEL
-     */
-    async function salvarNovoNivel(novoNivel: number) {
+    async function salvarNovoNivel(
+        novoNivel: number
+    ) {
         if (!skillSelecionada) {
             return;
         }
 
-        const token = localStorage.getItem("token");
+        const token =
+            localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error(
+                "Usuário não autenticado."
+            );
+        }
 
         const resposta = await fetch(
             `http://localhost:8080/api/user-skills/${skillSelecionada.id}?level=${novoNivel}`,
             {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type":
+                        "application/json",
                     Authorization: `Bearer ${token}`,
                 },
             }
@@ -236,7 +336,8 @@ export function Home() {
                 "Erro ao atualizar o nível.";
 
             try {
-                const dados = await resposta.json();
+                const dados =
+                    await resposta.json();
 
                 if (dados.message) {
                     mensagem = dados.message;
@@ -253,10 +354,12 @@ export function Home() {
 
         setSkills((skillsAtuais) =>
             skillsAtuais.map((skill) =>
-                skill.id === skillAtualizada.id
+                skill.id ===
+                skillAtualizada.id
                     ? {
                           ...skill,
-                          level: skillAtualizada.level,
+                          level:
+                              skillAtualizada.level,
                       }
                     : skill
             )
@@ -264,22 +367,19 @@ export function Home() {
     }
 
     /*
-     * ABRIR MODAL DE ADICIONAR
+     * =========================
+     * ADICIONAR SKILL
+     * =========================
      */
+
     function abrirModalAdicionar() {
         setModalAdicionarAberto(true);
     }
 
-    /*
-     * FECHAR MODAL DE ADICIONAR
-     */
     function fecharModalAdicionar() {
         setModalAdicionarAberto(false);
     }
 
-    /*
-     * ADICIONAR NOVA SKILL
-     */
     async function adicionarSkill(
         skillId: number,
         nivel: number
@@ -290,17 +390,28 @@ export function Home() {
             );
         }
 
-        const token = localStorage.getItem("token");
+        const token =
+            localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error(
+                "Usuário não autenticado."
+            );
+        }
 
         /*
-         * BUSCAR USUÁRIO PELO LOGIN
+         * =========================
+         * BUSCAR USUÁRIO
+         * =========================
          */
+
         const respostaUsers = await fetch(
             "http://localhost:8080/api/users",
             {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type":
+                        "application/json",
                     Authorization: `Bearer ${token}`,
                 },
             }
@@ -315,10 +426,12 @@ export function Home() {
         const usuarios: User[] =
             await respostaUsers.json();
 
-        const usuarioLogado = usuarios.find(
-            (user) =>
-                user.login === usuario.login
-        );
+        const usuarioLogado =
+            usuarios.find(
+                (user) =>
+                    user.login ===
+                    usuario.login
+            );
 
         if (!usuarioLogado) {
             throw new Error(
@@ -327,18 +440,66 @@ export function Home() {
         }
 
         /*
-         * CADASTRAR USER-SKILL
+         * =========================
+         * EVITAR DUPLICAR SKILL
+         * =========================
          */
+
+        const respostaUserSkills =
+            await fetch(
+                "http://localhost:8080/api/user-skills",
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+        if (!respostaUserSkills.ok) {
+            throw new Error(
+                "Erro ao verificar Skills do usuário."
+            );
+        }
+
+        const todasUserSkills: UserSkill[] =
+            await respostaUserSkills.json();
+
+        const skillJaExiste =
+            todasUserSkills.some(
+                (userSkill) =>
+                    userSkill.userId ===
+                        usuarioLogado.id &&
+                    userSkill.skillId ===
+                        skillId
+            );
+
+        if (skillJaExiste) {
+            throw new Error(
+                "Você já possui essa Skill cadastrada."
+            );
+        }
+
+        /*
+         * =========================
+         * CADASTRAR USER-SKILL
+         * =========================
+         */
+
         const resposta = await fetch(
             "http://localhost:8080/api/user-skills",
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type":
+                        "application/json",
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    userId: usuarioLogado.id,
+                    userId:
+                        usuarioLogado.id,
                     skillId: skillId,
                     level: nivel,
                 }),
@@ -350,7 +511,8 @@ export function Home() {
                 "Erro ao adicionar Skill.";
 
             try {
-                const dados = await resposta.json();
+                const dados =
+                    await resposta.json();
 
                 if (dados.message) {
                     mensagem = dados.message;
@@ -366,10 +528,14 @@ export function Home() {
             await resposta.json();
 
         /*
-         * ENCONTRAR OS DADOS DA SKILL
+         * =========================
+         * ENCONTRAR SKILL
+         * =========================
          */
+
         const skill = todasSkills.find(
-            (item) => item.id === skillId
+            (item) =>
+                item.id === skillId
         );
 
         if (!skill) {
@@ -379,14 +545,20 @@ export function Home() {
         }
 
         /*
-         * ADICIONAR NA LISTA DA HOME
+         * =========================
+         * ADICIONAR NA HOME
+         * =========================
          */
+
         const novaSkill: MinhaSkill = {
             id: novaUserSkill.id,
-            skillId: novaUserSkill.skillId,
-            level: novaUserSkill.level,
+            skillId:
+                novaUserSkill.skillId,
+            level:
+                novaUserSkill.level,
             name: skill.name,
-            description: skill.description,
+            description:
+                skill.description,
             imageUrl: skill.imageUrl,
         };
 
@@ -396,57 +568,106 @@ export function Home() {
         ]);
 
         /*
-         * IR PARA A PÁGINA DA NOVA SKILL
+         * =========================
+         * PAGINAÇÃO
+         * =========================
          */
-        const novaQuantidade = skills.length + 1;
+
+        const novaQuantidade =
+            skills.length + 1;
 
         const novaPagina = Math.ceil(
-            novaQuantidade / skillsPorPagina
+            novaQuantidade /
+                skillsPorPagina
         );
 
         setPaginaAtual(novaPagina);
+
+        /*
+         * FECHAR MODAL
+         */
+
+        setModalAdicionarAberto(false);
     }
 
-    const totalSkills = skills.length;
+    /*
+     * =========================
+     * RESUMO
+     * =========================
+     */
 
-    const totalIntermediarias = skills.filter(
-        (skill) => skill.level === 3
-    ).length;
+    const totalSkills =
+        skills.length;
 
-    const totalAvancadas = skills.filter(
-        (skill) =>
-            skill.level === 4 ||
-            skill.level === 5
-    ).length;
+    const totalIntermediarias =
+        skills.filter(
+            (skill) =>
+                skill.level === 3
+        ).length;
+
+    const totalAvancadas =
+        skills.filter(
+            (skill) =>
+                skill.level === 4 ||
+                skill.level === 5
+        ).length;
 
     /*
-     * IDS DAS SKILLS JÁ CADASTRADAS
+     * =========================
+     * SKILLS JÁ CADASTRADAS
+     * =========================
      */
-    const skillsJaCadastradas = skills.map(
-        (skill) => skill.skillId
-    );
+
+    const skillsJaCadastradas =
+        skills.map(
+            (skill) =>
+                skill.skillId
+        );
+
+    /*
+     * =========================
+     * TELA
+     * =========================
+     */
 
     return (
-        <main className={styles.container}>
+        <main
+            className={
+                styles.container
+            }
+        >
             <Header />
 
-            <section className={styles.conteudo}>
-
+            <section
+                className={
+                    styles.conteudo
+                }
+            >
                 {/* APRESENTAÇÃO */}
 
-                <div className={styles.apresentacao}>
+                <div
+                    className={
+                        styles.apresentacao
+                    }
+                >
                     <div>
-                        <h1>Bem-vindo!</h1>
+                        <h1>
+                            Bem-vindo!
+                        </h1>
 
                         <p>
-                            Continue desenvolvendo
-                            suas habilidades.
+                            Continue
+                            desenvolvendo
+                            suas
+                            habilidades.
                         </p>
                     </div>
 
                     <button
                         type="button"
-                        onClick={abrirModalAdicionar}
+                        onClick={
+                            abrirModalAdicionar
+                        }
                     >
                         + Adicionar Skill
                     </button>
@@ -454,8 +675,11 @@ export function Home() {
 
                 {/* CARDS DE RESUMO */}
 
-                <section className={styles.resumo}>
-
+                <section
+                    className={
+                        styles.resumo
+                    }
+                >
                     <CardResumo
                         valor={
                             loading
@@ -482,23 +706,31 @@ export function Home() {
                         }
                         titulo="Avançadas"
                     />
-
                 </section>
 
                 {/* MINHAS SKILLS */}
 
-                <section className={styles.minhasSkills}>
-
-                    <h2>Minhas Skills</h2>
+                <section
+                    className={
+                        styles.minhasSkills
+                    }
+                >
+                    <h2>
+                        Minhas Skills
+                    </h2>
 
                     {loading ? (
                         <p>
-                            Carregando Skills...
+                            Carregando
+                            Skills...
                         </p>
-                    ) : skills.length === 0 ? (
+                    ) : skills.length ===
+                      0 ? (
                         <p>
-                            Você ainda não possui
-                            Skills cadastradas.
+                            Você ainda
+                            não possui
+                            Skills
+                            cadastradas.
                         </p>
                     ) : (
                         <>
@@ -508,9 +740,13 @@ export function Home() {
                                 }
                             >
                                 {skillsVisiveis.map(
-                                    (skill) => (
+                                    (
+                                        skill
+                                    ) => (
                                         <CardMinhasSkills
-                                            key={skill.id}
+                                            key={
+                                                skill.id
+                                            }
                                             nome={
                                                 skill.name
                                             }
@@ -535,7 +771,8 @@ export function Home() {
 
                             {/* PAGINAÇÃO */}
 
-                            {totalPaginas > 1 && (
+                            {totalPaginas >
+                                1 && (
                                 <div
                                     className={
                                         styles.paginacao
@@ -547,17 +784,23 @@ export function Home() {
                                             paginaAnterior
                                         }
                                         disabled={
-                                            paginaAtual === 1
+                                            paginaAtual ===
+                                            1
                                         }
                                     >
-                                        ← Anterior
+                                        ←
+                                        Anterior
                                     </button>
 
                                     <span>
                                         Página{" "}
-                                        {paginaAtual}{" "}
+                                        {
+                                            paginaAtual
+                                        }{" "}
                                         de{" "}
-                                        {totalPaginas}
+                                        {
+                                            totalPaginas
+                                        }
                                     </span>
 
                                     <button
@@ -570,22 +813,23 @@ export function Home() {
                                             totalPaginas
                                         }
                                     >
-                                        Próxima →
+                                        Próxima
+                                        →
                                     </button>
                                 </div>
                             )}
                         </>
                     )}
-
                 </section>
-
             </section>
 
             {/* MODAL EDITAR NÍVEL */}
 
             {skillSelecionada && (
                 <ModalEditarNivel
-                    aberto={modalEditarAberto}
+                    aberto={
+                        modalEditarAberto
+                    }
                     nivelAtual={
                         skillSelecionada.level
                     }
@@ -601,8 +845,12 @@ export function Home() {
             {/* MODAL ADICIONAR SKILL */}
 
             <ModalAdicionarSkill
-                aberto={modalAdicionarAberto}
-                skills={todasSkills}
+                aberto={
+                    modalAdicionarAberto
+                }
+                skills={
+                    todasSkills
+                }
                 skillsJaCadastradas={
                     skillsJaCadastradas
                 }
@@ -613,7 +861,6 @@ export function Home() {
                     adicionarSkill
                 }
             />
-
         </main>
     );
 }
