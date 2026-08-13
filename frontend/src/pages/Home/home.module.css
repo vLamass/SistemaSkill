@@ -1,0 +1,153 @@
+.container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--color-background);
+}
+
+.conteudo {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.apresentacao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+}
+
+.apresentacao h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: var(--color-text);
+}
+
+.apresentacao p {
+    margin-top: 8px;
+    color: var(--color-text-secondary);
+}
+
+.apresentacao button {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.apresentacao button:hover {
+    background-color: var(--color-primary-hover);
+}
+
+
+
+.resumo {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+
+
+.minhasSkills {
+    width: 100%;
+}
+
+.minhasSkills h2 {
+    margin-bottom: 20px;
+    color: var(--color-text);
+}
+
+.minhasSkills p {
+    color: var(--color-text-secondary);
+}
+
+.listaSkills {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.paginacao {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 16px;
+
+    margin-top: 24px;
+}
+
+.paginacao button {
+    border: 1px solid var(--color-primary);
+    border-radius: 8px;
+
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+
+    padding: 9px 16px;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.paginacao button:hover:not(:disabled) {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 4px 10px rgba(184, 135, 70, 0.25);
+}
+
+.paginacao button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.paginacao span {
+    color: var(--color-text-secondary);
+
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    min-width: 100px;
+    text-align: center;
+}
+
+
+
+@media (max-width: 768px) {
+
+    .conteudo {
+        padding: 24px;
+    }
+
+    .apresentacao {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .resumo {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
